@@ -34,7 +34,7 @@ const Header = () => {
   >
     <Toolbar sx={{ flexWrap: 'wrap' }}>
       {isMobile ? (
-        <IconButton onClick={() => setOpenDrawer(!openDrawer)}>
+        <IconButton onClick={() => setOpenDrawer(!openDrawer)} sx={{ mr: 1 }}>
           <MenuIcon />
         </IconButton>) : (<></>)
       }
