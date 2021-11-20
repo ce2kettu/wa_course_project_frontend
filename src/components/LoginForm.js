@@ -1,4 +1,4 @@
-import { React, useState } from 'react';
+import { useContext, useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -9,20 +9,24 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Alert from '@mui/material/Alert';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../reducers/auth';
 
 const LoginForm = () => {
+  const { dispatch } = useContext(AuthContext);
+
   const initialState = {
     errorMessage: null
   }
 
   const [data, setData] = useState(initialState);
+  let navigate = useNavigate();
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
-    fetch('http://localhost:3000/api/users/login', {
+    fetch('http://localhost:5000/api/users/login', {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -35,9 +39,13 @@ const LoginForm = () => {
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          setData({ ...data, errorMessage: 'no error' })
+          dispatch({
+            type: "LOGIN",
+            payload: data
+          });
+          navigate('/', { replace: true });
         } else {
-          setData({ ...data, errorMessage: 'some error' })
+          setData({ ...data, errorMessage: data.message })
         }
       })
       .catch(err => setData({ ...data, errorMessage: 'Unknown error' }));

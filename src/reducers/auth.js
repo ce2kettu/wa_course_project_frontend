@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from 'react';
 
 export const AuthContext = React.createContext();
 
@@ -10,17 +10,18 @@ export const initialState = {
 
 export const reducer = (state, action) => {
     switch (action.type) {
-        case "LOGIN":
-            localStorage.setItem("user", JSON.stringify(action.payload.user));
-            localStorage.setItem("token", JSON.stringify(action.payload.token));
+        case 'LOGIN':
+            localStorage.setItem('user', JSON.stringify(action.payload.user));
+            localStorage.setItem('token', JSON.stringify(action.payload.token));
             return {
                 ...state,
                 isAuthenticated: true,
                 user: action.payload.user,
                 token: action.payload.token
             };
-        case "LOGOUT":
+        case 'LOGOUT':
             localStorage.removeItem('token');
+            localStorage.removeItem('user');
             return {
                 ...state,
                 isAuthenticated: false,
