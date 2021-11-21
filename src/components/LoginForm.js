@@ -11,12 +11,14 @@ import Container from '@mui/material/Container';
 import Alert from '@mui/material/Alert';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../reducers/auth';
+import config from '../config';
 
 const LoginForm = () => {
   const { dispatch } = useContext(AuthContext);
 
   const initialState = {
-    errorMessage: null
+    errorMessage: null,
+    errors: null,
   }
 
   const [data, setData] = useState(initialState);
@@ -26,10 +28,10 @@ const LoginForm = () => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
-    fetch('http://localhost:5000/api/users/login', {
-      method: "POST",
+    fetch(`${config.apiUrl}/api/users/login`, {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         email: data.get('email'),
@@ -40,12 +42,14 @@ const LoginForm = () => {
       .then(data => {
         if (data.success) {
           dispatch({
-            type: "LOGIN",
+            type: 'LOGIN',
             payload: data
           });
           navigate('/', { replace: true });
         } else {
-          setData({ ...data, errorMessage: data.message })
+          data.errors ?
+            setData({ ...data, errors: data.errors }) :
+            setData({ ...data, errorMessage: data.message });
         }
       })
       .catch(err => setData({ ...data, errorMessage: 'Unknown error' }));
@@ -106,6 +110,18 @@ const LoginForm = () => {
           </Grid>
           {data.errorMessage && (
             <Alert severity="error" sx={{ mt: 1 }}>{data.errorMessage}</Alert>
+          )}
+
+          {data.errors && (
+            <Alert severity="error" sx={{ mt: 1 }}>
+              <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                {
+                  data.errors.map(err =>
+                    <span>{err.param}: {err.msg}</span>
+                  )
+                }
+              </Box>
+            </Alert>
           )}
         </Box>
       </Box>
