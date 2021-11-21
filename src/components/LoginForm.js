@@ -15,6 +15,7 @@ import config from '../config';
 
 const LoginForm = () => {
   const { state: authState, dispatch } = useContext(AuthContext);
+  let navigate = useNavigate();
 
   const initialState = {
     errorMessage: null,
@@ -22,6 +23,11 @@ const LoginForm = () => {
   }
 
   useEffect(() => {
+    if (authState.isAuthenticated) {
+      navigate('/', { replace: true });
+      return;
+    }
+
     let timer;
     if (authState.registrationSuccessful) {
       timer = setTimeout(() => {
@@ -32,10 +38,9 @@ const LoginForm = () => {
     return () => {
       clearTimeout(timer);
     };
-  }, [])
+  }, [authState.isAuthenticated])
 
   const [data, setData] = useState(initialState);
-  let navigate = useNavigate();
 
   const handleSubmit = (event) => {
     event.preventDefault();

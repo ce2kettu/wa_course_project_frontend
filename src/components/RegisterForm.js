@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -14,15 +14,21 @@ import { AuthContext } from '../reducers/auth';
 import config from '../config';
 
 const RegisterForm = () => {
-  const { dispatch } = useContext(AuthContext);
+  const { state: authState, dispatch } = useContext(AuthContext);
+  let navigate = useNavigate();
 
   const initialState = {
     errorMessage: null,
     errors: null,
   }
 
+  useEffect(() => {
+    if (authState.isAuthenticated) {
+      navigate('/', { replace: true });
+    }
+  }, [authState.isAuthenticated])
+
   const [data, setData] = useState(initialState);
-  let navigate = useNavigate();
 
   const handleSubmit = (event) => {
     event.preventDefault();
