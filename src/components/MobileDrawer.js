@@ -25,7 +25,7 @@ const MobileDrawer = (props) => {
         <List>
           {
             props.navigation.map(item =>
-              <ListItem disablePadding onClick={() => props.setOpenDrawer(false)}>
+              <ListItem key={item.name} disablePadding onClick={() => props.setOpenDrawer(false)}>
                 <ListItemButton component={RouterLink} to={item.path}>
                   <ListItemText primary={item.name} />
                 </ListItemButton>
