@@ -6,6 +6,7 @@ export const initialState = {
     isAuthenticated: false,
     user: null,
     token: null,
+    registrationSuccessful: false,
 };
 
 export const reducer = (state, action) => {
@@ -27,6 +28,21 @@ export const reducer = (state, action) => {
                 isAuthenticated: false,
                 user: null
             };
+        case 'REGISTER':
+            {
+                return {
+                    ...state,
+                    registrationSuccessful: true
+                }
+            }
+        case 'DISMISS_REGISTRATION':
+            {
+                console.log('here');
+                return {
+                    ...state,
+                    registrationSuccessful: false
+                }
+            }
         default:
             return state;
     }

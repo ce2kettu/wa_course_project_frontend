@@ -1,5 +1,6 @@
 import { Alert, List, ListItem, ListItemText } from '@mui/material';
 import { useEffect, useState } from 'react';
+import config from '../config';
 
 const HomePage = () => {
     const initialState = {
@@ -13,7 +14,7 @@ const HomePage = () => {
     useEffect(() => {
         let isMounted = true;
 
-        fetch('http://localhost:5000/api/posts/all')
+        fetch(`${config.apiUrl}/api/posts/all`)
             .then(res => res.json())
             .then(data => {
                 if (isMounted) {
@@ -28,7 +29,7 @@ const HomePage = () => {
         return () => {
             isMounted = false;
         }
-    }, []);
+    });
 
     return <>
         {data.errorMessage &&

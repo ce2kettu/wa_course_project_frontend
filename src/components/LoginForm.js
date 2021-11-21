@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -14,12 +14,25 @@ import { AuthContext } from '../reducers/auth';
 import config from '../config';
 
 const LoginForm = () => {
-  const { dispatch } = useContext(AuthContext);
+  const { state: authState, dispatch } = useContext(AuthContext);
 
   const initialState = {
     errorMessage: null,
     errors: null,
   }
+
+  useEffect(() => {
+    let timer;
+    if (authState.registrationSuccessful) {
+      timer = setTimeout(() => {
+        dispatch({ type: 'DISMISS_REGISTRATION' })
+      }, 3000);
+    }
+
+    return () => {
+      clearTimeout(timer);
+    };
+  })
 
   const [data, setData] = useState(initialState);
   let navigate = useNavigate();
@@ -65,6 +78,10 @@ const LoginForm = () => {
           alignItems: 'center',
         }}
       >
+        {authState.registrationSuccessful && (
+          <Alert severity="success" sx={{ mb: 2 }}>Registration successful</Alert>
+        )}
+
         <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
           <LockOutlinedIcon />
         </Avatar>

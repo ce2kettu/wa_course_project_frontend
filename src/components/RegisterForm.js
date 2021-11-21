@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -10,9 +10,12 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Alert from '@mui/material/Alert';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../reducers/auth';
 import config from '../config';
 
 const RegisterForm = () => {
+  const { dispatch } = useContext(AuthContext);
+
   const initialState = {
     errorMessage: null,
     errors: null,
@@ -39,6 +42,9 @@ const RegisterForm = () => {
       .then(res => res.json())
       .then(data => {
         if (data.success) {
+          dispatch({
+            type: 'REGISTER',
+          });
           navigate('/login', { replace: true });
         } else {
           data.errors ?
@@ -121,12 +127,12 @@ const RegisterForm = () => {
 
           {data.errors && (
             <Alert severity="error" sx={{ mt: 1 }}>
-              <Box sx={{display: 'flex', flexDirection: 'column'}}>
-              {
-                data.errors.map(err =>
-                  <span>{err.param}: {err.msg}</span>
-                )
-              }
+              <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                {
+                  data.errors.map(err =>
+                    <span>{err.param}: {err.msg}</span>
+                  )
+                }
               </Box>
             </Alert>
           )}
