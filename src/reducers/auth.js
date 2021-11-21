@@ -37,7 +37,6 @@ export const reducer = (state, action) => {
             }
         case 'DISMISS_REGISTRATION':
             {
-                console.log('here');
                 return {
                     ...state,
                     registrationSuccessful: false

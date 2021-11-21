@@ -29,7 +29,7 @@ const HomePage = () => {
         return () => {
             isMounted = false;
         }
-    });
+    }, []);
 
     return <>
         {data.errorMessage &&

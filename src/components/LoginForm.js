@@ -32,7 +32,7 @@ const LoginForm = () => {
     return () => {
       clearTimeout(timer);
     };
-  })
+  }, [])
 
   const [data, setData] = useState(initialState);
   let navigate = useNavigate();
