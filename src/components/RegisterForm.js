@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -8,17 +8,45 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { Link as RouterLink } from 'react-router-dom';
+import Alert from '@mui/material/Alert';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import config from '../config';
 
 const RegisterForm = () => {
+  const initialState = {
+    errorMessage: null,
+    errors: null,
+  }
+
+  const [data, setData] = useState(initialState);
+  let navigate = useNavigate();
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    // eslint-disable-next-line no-console
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+
+    fetch(`${config.apiUrl}/api/users/register`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: data.get('email'),
+        password: data.get('password'),
+        displayName: data.get('displayName'),
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          navigate('/login', { replace: true });
+        } else {
+          data.errors ?
+            setData({ ...data, errors: data.errors }) :
+            setData({ ...data, errorMessage: data.message });
+        }
+      })
+      .catch(err => setData({ ...data, errorMessage: 'Unknown error' }));
   };
 
   return (
@@ -87,6 +115,21 @@ const RegisterForm = () => {
               </Link>
             </Grid>
           </Grid>
+          {data.errorMessage && (
+            <Alert severity="error" sx={{ mt: 1 }}>{data.errorMessage}</Alert>
+          )}
+
+          {data.errors && (
+            <Alert severity="error" sx={{ mt: 1 }}>
+              <Box sx={{display: 'flex', flexDirection: 'column'}}>
+              {
+                data.errors.map(err =>
+                  <span>{err.param}: {err.msg}</span>
+                )
+              }
+              </Box>
+            </Alert>
+          )}
         </Box>
       </Box>
     </Container>
