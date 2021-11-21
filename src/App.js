@@ -1,4 +1,4 @@
-import { useReducer } from "react";
+import { useReducer, useEffect } from "react";
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import LoginForm from './components/LoginForm';
@@ -13,6 +13,20 @@ import { AuthContext, reducer, initialState } from './reducers/auth';
 const App = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user') || null);
+    const token = JSON.parse(localStorage.getItem('token') || null);
+
+    if (user && token) {
+      dispatch({
+        type: 'LOGIN',
+        payload: {
+          user,
+          token
+        }
+      });
+    }
+  }, []);
 
   const theme = createTheme({
     palette: {
