@@ -136,7 +136,7 @@ const RegisterForm = () => {
               <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                 {
                   data.errors.map(err =>
-                    <span>{err.param}: {err.msg}</span>
+                    <span key={`${err.param}.${err.msg}`}>{err.param}: {err.msg}</span>
                   )
                 }
               </Box>
