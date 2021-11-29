@@ -10,6 +10,7 @@ import HomePage from './components/HomePage';
 import NotFound from './components/NotFound';
 import { AuthContext, reducer, initialState } from './reducers/auth';
 import Config from "./config";
+import PostDetail from "./components/PostDetail";
 
 const App = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -77,6 +78,7 @@ const App = () => {
           <Container component="main">
             <Routes>
               <Route path="/" element={<HomePage />} />
+              <Route path="post/:postId" element={<PostDetail />} />
               <Route path="register" element={<RegisterForm />} />
               <Route path="login" element={<LoginForm />} />
               <Route path="*" element={<NotFound />} />
