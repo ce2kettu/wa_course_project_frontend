@@ -1,6 +1,7 @@
 import { Alert, List, ListItem, ListItemText } from '@mui/material';
 import { useEffect, useState } from 'react';
 import config from '../config';
+import { useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
     const initialState = {
@@ -10,6 +11,7 @@ const HomePage = () => {
     }
 
     const [data, setData] = useState(initialState);
+    let navigate = useNavigate();
 
     useEffect(() => {
         let isMounted = true;
@@ -31,19 +33,24 @@ const HomePage = () => {
         }
     }, []);
 
-    return <>
-        {data.errorMessage &&
-            <Alert severity="error" sx={{ mt: 1 }}>{data.errorMessage}</Alert>
-        }
+    const openPost = (post) => {
+        navigate(`/post/${post._id}`, { replace: true });
+    }
 
+    return <>
+        <h1>Posts</h1>
         <List>
             {
                 data.posts.length > 0 &&
                 data.posts.map((post, index) =>
-                    <ListItem key={index}>
+                    <ListItem key={index} onClick={() => openPost(post)} style={{ cursor: 'pointer' }}>
                         <ListItemText primary={post.title} secondary={post.body}></ListItemText>
                     </ListItem>
                 )
+            }
+
+            {data.errorMessage &&
+                <Alert severity="error" sx={{ mt: 1 }}>{data.errorMessage}</Alert>
             }
 
             {
