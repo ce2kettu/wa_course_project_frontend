@@ -10,18 +10,21 @@ import HomePage from './components/HomePage';
 import NotFound from './components/NotFound';
 import { AuthContext, reducer, initialState } from './reducers/auth';
 import Config from "./config";
-import PostDetail from "./components/PostDetail";
+import PostDetail from './components/PostDetail';
+import CreatePost from './components/CreatePost';
 
 const App = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [invalidLogin, setInvalidLogin] = useState(false);
 
+  // Check if user is already logged in
   useEffect(() => {
     let isMounted = true;
 
     const user = JSON.parse(localStorage.getItem('user') || null);
     const token = JSON.parse(localStorage.getItem('token') || null);
 
+    // Fetch latest user information
     if (user && token) {
       fetch(`${Config.apiUrl}/api/users/profile`, {
         headers: {
@@ -43,6 +46,8 @@ const App = () => {
               dispatch({
                 type: 'LOGOUT',
               });
+
+              // Navigate to login page
               setInvalidLogin(true);
               setInvalidLogin(false);
             }
@@ -81,6 +86,7 @@ const App = () => {
               <Route path="post/:postId" element={<PostDetail />} />
               <Route path="register" element={<RegisterForm />} />
               <Route path="login" element={<LoginForm />} />
+              <Route path="createPost" element={<CreatePost />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Container>
