@@ -38,7 +38,7 @@ const LoginForm = () => {
     return () => {
       clearTimeout(timer);
     };
-  }, [authState.isAuthenticated])
+  }, [])
 
   const [data, setData] = useState(initialState);
 

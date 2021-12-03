@@ -26,7 +26,7 @@ const RegisterForm = () => {
     if (authState.isAuthenticated) {
       navigate('/', { replace: true });
     }
-  }, [authState.isAuthenticated])
+  }, [])
 
   const [data, setData] = useState(initialState);
 
