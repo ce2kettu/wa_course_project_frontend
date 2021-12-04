@@ -8,7 +8,7 @@ import { createMessage } from '../util';
 
 const VoteContent = ({ contentId, voteCount, type, onChange }) => {
   const { state: authState } = useContext(AuthContext);
-  const { snackPack, setSnackPack } = useContext(SnackbarContext);
+  const { setSnackPack } = useContext(SnackbarContext);
   const [vote, setVote] = useState({ hasVoted: false });
 
   // Check if user has already voted
@@ -84,7 +84,7 @@ const getButtonColor = (type) => {
     return 'inherit';
   }
 
-  if (vote.type == type) {
+  if (vote.type === type) {
     if (vote.type === 'down') {
       return theme.palette.error.main;
     } else {

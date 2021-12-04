@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { LockOutlined as LockOutlinedIcon } from '@mui/icons-material';
 import { Alert, Container, Typography, Grid, Box, Link, TextField, Button, Avatar } from '@mui/material';
 import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
@@ -8,8 +8,8 @@ import Config from '../config';
 import { createMessage } from '../util';
 
 const LoginForm = () => {
-  const { state: authState, dispatch } = useContext(AuthContext);
-  const { snackPack, setSnackPack } = useContext(SnackbarContext);
+  const { dispatch } = useContext(AuthContext);
+  const { setSnackPack } = useContext(SnackbarContext);
   let navigate = useNavigate();
   let location = useLocation();
   const from = location.state?.from?.pathname || '/';
@@ -62,7 +62,7 @@ const LoginForm = () => {
           alignItems: 'center',
         }}
       >
-        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }} >
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">

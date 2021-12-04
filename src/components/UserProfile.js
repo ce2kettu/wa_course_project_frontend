@@ -1,5 +1,5 @@
 import { Alert, Avatar, Container, Typography, Box } from '@mui/material';
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Config from '../config';
 import { stringAvatar } from '../util';

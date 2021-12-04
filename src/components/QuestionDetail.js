@@ -14,7 +14,7 @@ import { createMessage } from '../util';
 
 const QuestionDetail = () => {
   const { state: authState } = useContext(AuthContext);
-  const { snackPack, setSnackPack } = useContext(SnackbarContext);
+  const { setSnackPack } = useContext(SnackbarContext);
   const [post, setPost] = useState(null);
   const [title, setTitle] = useState('');
   const [commentValue, setCommentValue] = useState('');
@@ -211,12 +211,12 @@ const QuestionDetail = () => {
                 )
             }
             <Box>
-              <span style={{ marginRight: '1em' }}>asked<ReactTimeAgo style={{ marginLeft: '.5em', color: theme.palette.secondary.main }} date={new Date(post.createdAt)} locale="en-US" /></span>
+              <span style={{ marginRight: '1em' }}>asked<ReactTimeAgo style={{ marginLeft: '0.5em', color: theme.palette.secondary.main }} date={new Date(post.createdAt)} locale="en-US" /></span>
               {
                 post.updatedAt &&
                 post.createdAt !== post.updatedAt &&
                 (
-                  <span style={{ marginRight: '1em' }}>edited<ReactTimeAgo style={{ marginLeft: '.5em', color: theme.palette.secondary.main }} date={new Date(post.updatedAt)} locale="en-US" /></span>)
+                  <span style={{ marginRight: '1em' }}>edited<ReactTimeAgo style={{ marginLeft: '0.5em', color: theme.palette.secondary.main }} date={new Date(post.updatedAt)} locale="en-US" /></span>)
               }
               {
                 (authState.user?._id === post.user._id || authState.user?.isAdmin)

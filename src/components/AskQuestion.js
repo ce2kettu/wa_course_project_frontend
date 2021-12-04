@@ -9,7 +9,7 @@ import Config from '../config';
 
 const AskQuestion = () => {
   const { state: authState } = useContext(AuthContext);
-  const { snackPack, setSnackPack } = useContext(SnackbarContext);
+  const { setSnackPack } = useContext(SnackbarContext);
   const [body, setBody] = useState('');
   const [title, setTitle] = useState('');
   let navigate = useNavigate();

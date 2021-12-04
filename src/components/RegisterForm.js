@@ -7,7 +7,7 @@ import Config from '../config';
 import { createMessage } from '../util';
 
 const RegisterForm = () => {
-  const { snackPack, setSnackPack } = useContext(SnackbarContext);
+  const { setSnackPack } = useContext(SnackbarContext);
   let navigate = useNavigate();
 
   const initialState = {
