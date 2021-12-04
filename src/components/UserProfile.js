@@ -1,4 +1,4 @@
-import { Alert, Avatar, Container, Typography, Box } from '@mui/material';
+import { Alert, Avatar, Container, Typography, Box, Card, CardContent } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Config from '../config';
@@ -8,6 +8,7 @@ const UserProfile = () => {
   const [error, setError] = useState('');
   const [user, setUser] = useState(null);
   let params = useParams();
+  const displayName = user ? user.displayName : 'Unknown';
 
   // Fetch profile and display it
   useEffect(() => {
@@ -33,7 +34,7 @@ const UserProfile = () => {
   }, []);
 
   return (
-    <Container sx={{ mt: 5 }}>
+    <Container component="main" maxWidth="xs">
       {error && (
         <Alert severity="error">{error}</Alert>
       )}
@@ -42,22 +43,33 @@ const UserProfile = () => {
         user &&
         <Box
           sx={{
+            marginTop: 8,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            justifyContent: 'center',
           }}
         >
-          <Avatar {...stringAvatar(user.displayName || 'Unknown')} sx={{ width: 72, height: 72 }} />
-          <Typography sx={{ mt: 5 }} variant="subtitle2" gutterBottom component="div">
-            Display name: {user.displayName || 'Unknown'}
+          <Avatar {...stringAvatar(displayName)} sx={{ width: 72, height: 72 }} />
+          <Typography component="h1" variant="h5" sx={{ mt: 2 }}>
+            {displayName}
           </Typography>
-          <Typography sx={{ mt: 5 }} variant="subtitle2" gutterBottom component="div">
-            Registered at: {user.createdAt}
-          </Typography>
-          <Typography sx={{ mt: 5 }} variant="subtitle2" gutterBottom component="div">
-            Bio: {user.bio}
-          </Typography>
+          <Box sx={{ width: '100%', mt: 4 }}>
+            <Card variant="outlined" sx={{ p: 2 }}>
+              <CardContent sx={{ p: 1 }}>
+                <Typography sx={{ fontSize: 14 }} color="primary.main" gutterBottom>
+                  Registered at {user.createdAt ? new Date(user.createdAt).toLocaleString('en-US') : 'unknown'}
+                </Typography>
+                <Typography sx={{ fontSize: 14 }} color="text.primary" gutterBottom>
+                  User bio
+                </Typography>
+                <Typography variant="body2">
+                  {user.bio ? user.bio : (
+                    <Alert severity="error" sx={{ mt: 2 }}>This user has no bio</Alert>
+                  )}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Box>
         </Box>
       }
     </Container>
