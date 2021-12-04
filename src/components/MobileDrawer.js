@@ -34,6 +34,7 @@ const MobileDrawer = (props) => {
           sx={{ flexGrow: 1, padding: 2, textDecoration: 'none' }}
           component={RouterLink}
           to="/"
+          onClick={closeDrawer}
         >
           heapover<span style={{ "color": "#ff3300" }}>flow</span>
         </Typography>
