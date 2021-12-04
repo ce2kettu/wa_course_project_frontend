@@ -81,7 +81,7 @@ const App = () => {
       return (
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="post/:postId" element={<PostDetail />} />
+          <Route path="q/:questionId" element={<PostDetail />} />
           <Route path="register" element={
             <RedirectAuth>
               <RegisterForm />

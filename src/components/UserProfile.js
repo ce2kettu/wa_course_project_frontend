@@ -56,7 +56,7 @@ const UserProfile = () => {
             Registered at: {user.createdAt}
           </Typography>
           <Typography sx={{ mt: 5 }} variant="subtitle2" gutterBottom component="div">
-            Bio: {user.createdAt}
+            Bio: {user.bio}
           </Typography>
         </Box>
       }

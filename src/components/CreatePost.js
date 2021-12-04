@@ -26,7 +26,7 @@ const CreatePost = () => {
   return (
     <>
       <Typography gutterBottom component="div" variant="h3" sx={{ mt: 2, mb: 3 }}>
-        New post
+        Ask Question
       </Typography>
       <TextField
         margin="normal"

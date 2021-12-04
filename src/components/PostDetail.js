@@ -25,7 +25,7 @@ const PostDetail = () => {
   useEffect(() => {
     let isMounted = true;
 
-    fetch(`${Config.apiUrl}/api/posts/${params.postId}`)
+    fetch(`${Config.apiUrl}/api/posts/${params.questionId}`)
       .then(res => res.json())
       .then(data => {
         if (data.success) {
@@ -104,7 +104,7 @@ const PostDetail = () => {
   }
 
   const deletePost = () => {
-    fetch(`${Config.apiUrl}/api/posts/${params.postId}/delete`, {
+    fetch(`${Config.apiUrl}/api/posts/${params.questionId}/delete`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -123,7 +123,7 @@ const PostDetail = () => {
   const editPost = () => {
     setModifyContentId('');
 
-    fetch(`${Config.apiUrl}/api/posts/${params.postId}/edit`, {
+    fetch(`${Config.apiUrl}/api/posts/${params.questionId}/edit`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -164,14 +164,14 @@ const PostDetail = () => {
         post && (
           <Box
             sx={{
-              marginTop: 8,
+              my: 8,
               display: 'flex',
               flexDirection: 'column',
             }}
           >
             <Typography variant="h4" gutterBottom component="div">{post.title}</Typography>
             <Box>
-              <span style={{ marginRight: '1em' }}>posted<ReactTimeAgo style={{ marginLeft: '.5em', color: theme.palette.secondary.main }} date={new Date(post.createdAt)} locale="en-US" /></span>
+              <span style={{ marginRight: '1em' }}>asked<ReactTimeAgo style={{ marginLeft: '.5em', color: theme.palette.secondary.main }} date={new Date(post.createdAt)} locale="en-US" /></span>
               {
                 post.updatedAt &&
                 post.createdAt !== post.updatedAt &&
@@ -251,7 +251,7 @@ const PostDetail = () => {
 
 
                   <Box sx={{ mt: 3 }}>
-                    <span style={{ marginRight: '1em' }}>posted<ReactTimeAgo style={{ marginLeft: '.5em', color: theme.palette.secondary.main }} date={new Date(comment.createdAt)} locale="en-US" /></span>
+                    <span style={{ marginRight: '1em' }}>answered<ReactTimeAgo style={{ marginLeft: '.5em', color: theme.palette.secondary.main }} date={new Date(comment.createdAt)} locale="en-US" /></span>
                     {
                       comment.updatedAt &&
                       comment.createdAt !== comment.updatedAt &&

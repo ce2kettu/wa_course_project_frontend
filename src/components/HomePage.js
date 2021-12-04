@@ -4,8 +4,8 @@ import { Add as AddIcon } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../reducers/auth';
 import Config from '../config';
-import { stringAvatar } from '../util';
 import UserHeader from './UserHeader';
+import ReactTimeAgo from 'react-time-ago'
 
 const HomePage = () => {
   const initialState = {
@@ -40,7 +40,7 @@ const HomePage = () => {
   }, []);
 
   const openPost = (post) => {
-    navigate(`/post/${post._id}`);
+    navigate(`/q/${post._id}`);
   }
 
   const createPost = () => {
@@ -88,15 +88,16 @@ const HomePage = () => {
             data.posts.map((post, index) =>
               <div key={index}>
                 <Grid container spacing={2} sx={{ py: 1, px: 2, cursor: 'pointer' }} onClick={() => openPost(post)}>
-                  <Grid item xs="auto" alignItems="center">
+                  <Grid item xs alignItems="center">
                     <Stack>
-                      <Box onClick={(e) => e.stopPropagation()}>
-                        <UserHeader user={post.user} />
-                      </Box>
+                      <Stack direction="row">
+                        <Box onClick={(e) => e.stopPropagation()}>
+                          <UserHeader user={post.user} color={'text.secondary'} />
+                        </Box>
+                        <Stack></Stack>
+                      </Stack>
                       <Typography
                         sx={{ cursor: 'pointer' }}
-                        gutterBottom
-
                         variant="subtitle1"
                         component="div"
                       >
@@ -104,13 +105,13 @@ const HomePage = () => {
                       </Typography>
                     </Stack>
                   </Grid>
-                  <Grid item xs>
-                    <Stack alignItems="flex-end" sx={{ mt: 1 }}>
+                  <Grid item xs="auto">
+                    <Stack alignItems="flex-end">
                       <Box>
                         <Typography variant="subtitle1" component="div" display="inline" color="secondary">
                           {post.score}
                         </Typography>
-                        <Typography variant="subtitle1" component="div" display="inline" sx={{ ml: .5 }}>
+                        <Typography variant="subtitle1" component="div" display="inline" sx={{ ml: 0.5 }} color="text.secondary">
                           votes
                         </Typography>
                       </Box>
@@ -118,8 +119,16 @@ const HomePage = () => {
                         <Typography variant="subtitle1" component="div" display="inline" color="secondary">
                           {post.comments.length}
                         </Typography>
-                        <Typography variant="subtitle1" component="div" display="inline" sx={{ ml: .5 }}>
+                        <Typography variant="subtitle1" component="div" display="inline" sx={{ ml: 0.5 }} color="text.secondary">
                           answers
+                        </Typography>
+                      </Box>
+                      <Box>
+                        <Typography variant="subtitle1" component="div" sx={{ ml: 0.5 }} color="text.secondary" display="inline">
+                          asked
+                          <Box sx={{ color: 'secondary.main', display: 'inline-block' }}>
+                            <ReactTimeAgo style={{ marginLeft: '0.3em' }} date={new Date(post.createdAt)} locale="en-US" />
+                          </Box>
                         </Typography>
                       </Box>
                     </Stack>
