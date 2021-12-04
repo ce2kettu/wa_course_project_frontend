@@ -1,5 +1,5 @@
 import { useReducer, useEffect, useState } from 'react';
-import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import { createTheme, ThemeProvider, CssBaseline, Container } from '@mui/material';
 import { AuthContext, reducer, initialState } from './reducers/auth';
 import Config from "./config";
@@ -18,8 +18,13 @@ import RedirectAuth from './components/RedirectAuth';
 const App = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [isLoading, setIsLoading] = useState(true);
-  const [isInvalidLogin, setIsInvalidLogin] = useState(false);
   let navigate = useNavigate();
+
+  const theme = createTheme({
+    palette: {
+      mode: "dark",
+    }
+  });
 
   // Check if user is already logged in
   useEffect(() => {
@@ -70,6 +75,7 @@ const App = () => {
     }
   }, []);
 
+  // Wait until authentication is done, so we don't redirect without a reason
   const addRoutes = () => {
     if (!isLoading) {
       return (
@@ -102,12 +108,6 @@ const App = () => {
       );
     }
   }
-
-  const theme = createTheme({
-    palette: {
-      mode: "dark",
-    }
-  });
 
   return (
     <ThemeProvider theme={theme}>
