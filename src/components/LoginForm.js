@@ -9,13 +9,16 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Alert from '@mui/material/Alert';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../reducers/auth';
 import config from '../config';
 
 const LoginForm = () => {
   const { state: authState, dispatch } = useContext(AuthContext);
   let navigate = useNavigate();
+  let location = useLocation();
+  const from = location.state?.from?.pathname || '/';
+
 
   const initialState = {
     errorMessage: null,
@@ -63,7 +66,7 @@ const LoginForm = () => {
             type: 'LOGIN',
             payload: data
           });
-          navigate('/', { replace: true });
+          navigate(from, { replace: true });
         } else {
           data.errors ?
             setData({ ...data, errors: data.errors }) :
