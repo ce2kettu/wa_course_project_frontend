@@ -102,7 +102,7 @@ const App = () => {
     return () => {
       isMounted = false;
     }
-  }, []);
+  }, [state.isAuthenticated]);
 
   // Wait until authentication is done, so we don't redirect without a reason
   const addRoutes = () => {
