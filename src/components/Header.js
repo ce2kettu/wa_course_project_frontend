@@ -24,7 +24,7 @@ const Header = () => {
   const [openDrawer, setOpenDrawer] = useState(false);
 
   let navigate = useNavigate();
-  
+
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -97,25 +97,29 @@ const Header = () => {
                   Register
                 </Button>
               </>
-            )}
-          {authState.isAuthenticated && (
-            <>
-              <Avatar sx={{ m: 1, bgcolor: 'secondary.main', cursor: 'pointer' }} onClick={handleClick}>
-              </Avatar>
-              <Menu
-                id="basic-menu"
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
-                MenuListProps={{
-                  'aria-labelledby': 'basic-button',
-                }}
-              >
-                <MenuItem onClick={handleClose}>My Profile</MenuItem>
-                <MenuItem onClick={logout}>Logout</MenuItem>
-              </Menu>
-            </>
-          )}
+            )
+          }
+
+          {
+            authState.isAuthenticated && (
+              <>
+                <Avatar sx={{ m: 1, bgcolor: 'secondary.main', cursor: 'pointer' }} onClick={handleClick}>
+                </Avatar>
+                <Menu
+                  id="basic-menu"
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={handleClose}
+                  MenuListProps={{
+                    'aria-labelledby': 'basic-button',
+                  }}
+                >
+                  <MenuItem onClick={handleClose}>My Profile</MenuItem>
+                  <MenuItem onClick={logout}>Logout</MenuItem>
+                </Menu>
+              </>
+            )
+          }
         </>
       )}
     </Toolbar>
