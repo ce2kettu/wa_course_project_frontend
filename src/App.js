@@ -12,6 +12,7 @@ import { AuthContext, reducer, initialState } from './reducers/auth';
 import Config from "./config";
 import PostDetail from './components/PostDetail';
 import CreatePost from './components/CreatePost';
+import UserProfile from './components/UserProfile';
 
 const App = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -86,6 +87,7 @@ const App = () => {
               <Route path="post/:postId" element={<PostDetail />} />
               <Route path="register" element={<RegisterForm />} />
               <Route path="login" element={<LoginForm />} />
+              <Route path="profile/:userId" element={<UserProfile />} />
               <Route path="createPost" element={<CreatePost />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
