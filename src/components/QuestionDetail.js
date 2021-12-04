@@ -8,11 +8,15 @@ import MDEditor from '@uiw/react-md-editor';
 import { useNavigate } from 'react-router-dom';
 import UserHeader from './UserHeader';
 import VoteContent from './VoteContent';
-import { Grid, Button, Typography, Box, Paper, Alert } from '@mui/material';
+import { Grid, Button, Typography, Box, Paper, Alert, TextField } from '@mui/material';
+import { SnackbarContext } from '../SnackbarContext';
+import { createMessage } from '../util';
 
-const PostDetail = () => {
+const QuestionDetail = () => {
   const { state: authState } = useContext(AuthContext);
+  const { snackPack, setSnackPack } = useContext(SnackbarContext);
   const [post, setPost] = useState(null);
+  const [title, setTitle] = useState('');
   const [commentValue, setCommentValue] = useState('');
   const [editableValue, setEditableValue] = useState('');
   const [modifyContentId, setModifyContentId] = useState('');
@@ -32,6 +36,7 @@ const PostDetail = () => {
           if (isMounted) {
             document.title = `${data.post.title} - Heapoverflow`;
             setPost(data.post);
+            setTitle(data.post.title);
           }
         } else {
           setError('Could not fetch post.');
@@ -44,7 +49,7 @@ const PostDetail = () => {
     }
   }, [requestRefresh]);
 
-  const postComment = () => {
+  const postAnswer = () => {
     fetch(`${Config.apiUrl}/api/comments/${post._id}/newComment`, {
       method: 'POST',
       headers: {
@@ -58,13 +63,18 @@ const PostDetail = () => {
       .then(res => res.json())
       .then(data => {
         if (data.success) {
+          // Reset comment
+          setCommentValue('');
           refreshPost();
+          setSnackPack((prev) => [...prev, createMessage('Answer posted.', 'success')])
+        } else {
+          setSnackPack((prev) => [...prev, createMessage('Could not post answer.', 'error')])
         }
       })
-      .catch(err => console.log(err));
+      .catch(err => setSnackPack((prev) => [...prev, createMessage('Please try again.', 'error')]));
   };
 
-  const editComment = (comment) => {
+  const editAnswer = (comment) => {
     setModifyContentId('');
 
     fetch(`${Config.apiUrl}/api/comments/${comment._id}/edit`, {
@@ -81,12 +91,15 @@ const PostDetail = () => {
       .then(data => {
         if (data.success) {
           refreshPost();
+          setSnackPack((prev) => [...prev, createMessage('Answer edited.', 'success')]);
+        } else {
+          setSnackPack((prev) => [...prev, createMessage('Could not edit answer.', 'error')])
         }
       })
-      .catch(err => console.log(err));
+      .catch(err => setSnackPack((prev) => [...prev, createMessage('Please try again.', 'error')]));
   };
 
-  const deleteComment = (comment) => {
+  const deleteAnswer = (comment) => {
     fetch(`${Config.apiUrl}/api/comments/${comment._id}/delete`, {
       method: 'DELETE',
       headers: {
@@ -98,9 +111,12 @@ const PostDetail = () => {
       .then(data => {
         if (data.success) {
           refreshPost();
+          setSnackPack((prev) => [...prev, createMessage('Answer deleted.', 'success')])
+        } else {
+          setSnackPack((prev) => [...prev, createMessage('Could not delete answer.', 'error')])
         }
       })
-      .catch(err => console.log(err));
+      .catch(err => setSnackPack((prev) => [...prev, createMessage('Please try again.', 'error')]));
   }
 
   const deletePost = () => {
@@ -114,13 +130,15 @@ const PostDetail = () => {
       .then(res => res.json())
       .then(data => {
         if (data.success) {
+          // Navigate to home
           navigate('/', { replace: true })
         }
       })
       .catch(err => console.log(err));
   }
 
-  const editPost = () => {
+  const editQuestion = () => {
+    // Disable editor
     setModifyContentId('');
 
     fetch(`${Config.apiUrl}/api/posts/${params.questionId}/edit`, {
@@ -130,7 +148,7 @@ const PostDetail = () => {
         'Authorization': `Bearer ${authState.token}`
       },
       body: JSON.stringify({
-        title: post.title,
+        title,
         body: editableValue
       })
     })
@@ -138,16 +156,20 @@ const PostDetail = () => {
       .then(data => {
         if (data.success) {
           refreshPost();
+          setSnackPack((prev) => [...prev, createMessage('Question edited.', 'success')])
+        } else {
+          setSnackPack((prev) => [...prev, createMessage('Could not edit question.', 'error')])
         }
       })
-      .catch(err => console.log(err));
+      .catch(err => setSnackPack((prev) => [...prev, createMessage('Please try again.', 'error')]));
   }
 
-  const editCommentInline = (comment) => {
-    setEditableValue(comment.body);
-    setModifyContentId(comment._id);
+  const editContentInline = (content) => {
+    setEditableValue(content.body);
+    setModifyContentId(content._id);
   }
 
+  // Refresh page contents
   const refreshPost = () => {
     setRequestRefresh(requestRefresh + 1);
   }
@@ -169,7 +191,25 @@ const PostDetail = () => {
               flexDirection: 'column',
             }}
           >
-            <Typography variant="h4" gutterBottom component="div">{post.title}</Typography>
+            {
+              post._id === modifyContentId ? (
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="title"
+                  label="Title"
+                  name="title"
+                  autoFocus
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  sx={{ mb: 4 }}
+                />
+              )
+                : (
+                  <Typography variant="h4" gutterBottom component="div">{post.title}</Typography>
+                )
+            }
             <Box>
               <span style={{ marginRight: '1em' }}>asked<ReactTimeAgo style={{ marginLeft: '.5em', color: theme.palette.secondary.main }} date={new Date(post.createdAt)} locale="en-US" /></span>
               {
@@ -181,7 +221,7 @@ const PostDetail = () => {
               {
                 (authState.user?._id === post.user._id || authState.user?.isAdmin)
                 && post._id !== modifyContentId &&
-                <Button onClick={() => editCommentInline(post)}>Edit</Button>
+                <Button onClick={() => editContentInline(post)}>Edit</Button>
               }
               {
                 authState.user?.isAdmin &&
@@ -189,13 +229,12 @@ const PostDetail = () => {
               }
               {
                 post._id === modifyContentId &&
-                <Button onClick={() => editPost(post)}>Save changes</Button>
+                <Button onClick={() => editQuestion(post)}>Save changes</Button>
               }
             </Box>
 
             <Paper variant="outlined" sx={{ width: '100%', padding: 3, mt: 2 }}>
               <UserHeader user={post.user} />
-
               <Grid
                 container
                 spacing={2}
@@ -223,6 +262,7 @@ const PostDetail = () => {
             </Typography>
 
             {
+              // Display comments
               post.comments &&
               post.comments.map((comment, index) => {
                 return <Paper variant="outlined" sx={{ width: '100%', padding: 3, mt: 2 }} key={index}>
@@ -261,15 +301,15 @@ const PostDetail = () => {
                     {
                       (authState.user?._id === comment.user._id || authState.user?.isAdmin)
                       && comment._id !== modifyContentId &&
-                      <Button onClick={() => editCommentInline(comment)}>Edit</Button>
+                      <Button onClick={() => editContentInline(comment)}>Edit</Button>
                     }
                     {
                       authState.user?.isAdmin &&
-                      <Button onClick={() => deleteComment(comment)}>Delete</Button>
+                      <Button onClick={() => deleteAnswer(comment)}>Delete</Button>
                     }
                     {
                       comment._id === modifyContentId &&
-                      <Button onClick={() => editComment(comment)}>Save changes</Button>
+                      <Button onClick={() => editAnswer(comment)}>Save changes</Button>
                     }
                   </Box>
                 </Paper>
@@ -281,7 +321,9 @@ const PostDetail = () => {
               <Alert severity="info" sx={{ mt: 1 }}>No answers yet! Be the first one to answer.</Alert>
             }
 
+
             {
+              // Display answer box if authenticated
               authState.isAuthenticated
                 ? (
                   <Box sx={{ mt: 3 }}>
@@ -290,13 +332,13 @@ const PostDetail = () => {
                     </Typography>
                     <MDEditor
                       textareaProps={{
-                        placeholder: 'Post content ....'
+                        placeholder: 'Write your answer...'
                       }}
                       value={commentValue}
                       onChange={setCommentValue}
                     />
                     <Box sx={{ mt: 3 }}>
-                      <Button variant="outlined" onClick={postComment}>Post reply</Button>
+                      <Button variant="outlined" onClick={postAnswer}>Post answer</Button>
                     </Box>
                   </Box>
                 )
@@ -310,4 +352,4 @@ const PostDetail = () => {
   )
 }
 
-export default PostDetail;
+export default QuestionDetail;

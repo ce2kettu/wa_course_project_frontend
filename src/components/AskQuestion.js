@@ -7,7 +7,7 @@ import { createMessage } from '../util';
 import MDEditor from '@uiw/react-md-editor';
 import Config from '../config';
 
-const CreatePost = () => {
+const AskQuestion = () => {
   const { state: authState } = useContext(AuthContext);
   const { snackPack, setSnackPack } = useContext(SnackbarContext);
   const [body, setBody] = useState('');
@@ -76,4 +76,4 @@ const CreatePost = () => {
   )
 }
 
-export default CreatePost;
+export default AskQuestion;

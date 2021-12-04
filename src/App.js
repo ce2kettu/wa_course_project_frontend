@@ -8,8 +8,8 @@ import RegisterForm from './components/RegisterForm';
 import Header from './components/Header';
 import HomePage from './components/HomePage';
 import NotFound from './components/NotFound';
-import PostDetail from './components/PostDetail';
-import CreatePost from './components/CreatePost';
+import QuestionDetail from './components/QuestionDetail';
+import AskQuestion from './components/AskQuestion';
 import UserProfile from './components/UserProfile';
 import EditProfile from './components/EditProfile';
 import RequireAuth from './components/RequireAuth';
@@ -110,7 +110,7 @@ const App = () => {
       return (
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="q/:questionId" element={<PostDetail />} />
+          <Route path="q/:questionId" element={<QuestionDetail />} />
           <Route path="register" element={
             <RedirectAuth>
               <RegisterForm />
@@ -129,7 +129,7 @@ const App = () => {
           } />
           <Route path="askQuestion" element={
             <RequireAuth>
-              <CreatePost />
+              <AskQuestion />
             </RequireAuth>
           } />
           <Route path="*" element={<NotFound />} />

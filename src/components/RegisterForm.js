@@ -1,14 +1,12 @@
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext } from 'react';
 import { LockOutlined as LockOutlinedIcon } from '@mui/icons-material';
 import { Alert, Container, Typography, Box, Grid, Link, TextField, Button, Avatar } from '@mui/material';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { AuthContext } from '../reducers/auth';
 import { SnackbarContext } from '../SnackbarContext';
 import Config from '../config';
 import { createMessage } from '../util';
 
 const RegisterForm = () => {
-  const { state: authState, dispatch } = useContext(AuthContext);
   const { snackPack, setSnackPack } = useContext(SnackbarContext);
   let navigate = useNavigate();
 

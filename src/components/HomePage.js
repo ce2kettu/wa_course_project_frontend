@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext, Fragment } from 'react';
-import { Alert, List, ListItem, ListItemText, Stack, Fab, Paper, Divider, Typography, Grid, Box, Avatar } from '@mui/material';
+import { Alert, List, Stack, Fab, Paper, Divider, Typography, Grid, Box } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../reducers/auth';
@@ -7,6 +7,7 @@ import Config from '../config';
 import UserHeader from './UserHeader';
 import ReactTimeAgo from 'react-time-ago'
 
+// Displays all questions
 const HomePage = () => {
   const initialState = {
     posts: [],
@@ -18,7 +19,7 @@ const HomePage = () => {
   const { state: authState } = useContext(AuthContext);
   let navigate = useNavigate();
 
-  // Fetch all posts
+  // Fetch all questions
   useEffect(() => {
     let isMounted = true;
 
@@ -31,7 +32,7 @@ const HomePage = () => {
       })
       .catch(err => setData({
         ...data, isFetching: false,
-        errorMessage: 'Could not fetch posts. Please try again.'
+        errorMessage: 'Could not fetch questions. Please try again.'
       }));
 
     return () => {
@@ -69,16 +70,16 @@ const HomePage = () => {
     {/* No posts available */}
     {
       !data.isFetching && data.posts.length === 0 && !data.errorMessage &&
-      <Alert severity="info" sx={{ mt: 1 }}>No posts available.</Alert>
+      <Alert severity="info" sx={{ mt: 1 }}>No questions available.</Alert>
     }
 
     {/* Display loading status */}
     {
       data.isFetching &&
-      <Alert severity="info" sx={{ mt: 1 }}>Loading posts...</Alert>
+      <Alert severity="info" sx={{ mt: 1 }}>Loading questions...</Alert>
     }
 
-    {/* Display posts */}
+    {/* Display questions */}
     {
       data.posts.length > 0 &&
       <Paper elevation={3} sx={{ mb: 8 }}>
@@ -91,6 +92,7 @@ const HomePage = () => {
                   <Grid item xs alignItems="center">
                     <Stack>
                       <Stack direction="row">
+                        {/* Stop propagation to allow user to click on user's profile also */}
                         <Box onClick={(e) => e.stopPropagation()}>
                           <UserHeader user={post.user} color={'text.secondary'} />
                         </Box>
@@ -135,6 +137,7 @@ const HomePage = () => {
                   </Grid>
                 </Grid>
                 {
+                  // Add divider for all posts except the last one
                   index !== data.posts.length - 1 &&
                   <Divider />
                 }

@@ -12,13 +12,12 @@ const LoginForm = () => {
   const { snackPack, setSnackPack } = useContext(SnackbarContext);
   let navigate = useNavigate();
   let location = useLocation();
-  const [data, setData] = useState(initialState);
-
   const from = location.state?.from?.pathname || '/';
   const initialState = {
     errorMessage: null,
     errors: null,
   }
+  const [data, setData] = useState(initialState);
 
   // Handle login on server
   const handleSubmit = (event) => {
