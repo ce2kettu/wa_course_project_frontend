@@ -9,7 +9,7 @@ const UserProfile = () => {
   const [user, setUser] = useState(null);
   let params = useParams();
 
-  // Fetch profile
+  // Fetch profile and display it
   useEffect(() => {
     let isMounted = true;
 

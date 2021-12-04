@@ -1,11 +1,14 @@
 import { useEffect, useState, useContext } from 'react';
-import { KeyboardArrowUp, KeyboardArrowDown } from "@mui/icons-material";
+import { KeyboardArrowUp, KeyboardArrowDown } from '@mui/icons-material';
 import { IconButton, Stack, Typography, useTheme } from "@mui/material";
 import { AuthContext } from '../reducers/auth';
+import { SnackbarContext } from '../SnackbarContext';
 import Config from '../config';
+import { createMessage } from '../util';
 
 const VoteContent = ({ contentId, voteCount, type, onChange }) => {
   const { state: authState } = useContext(AuthContext);
+  const { snackPack, setSnackPack } = useContext(SnackbarContext);
   const [vote, setVote] = useState({ hasVoted: false });
 
   // Check if user has already voted
@@ -61,57 +64,59 @@ const VoteContent = ({ contentId, voteCount, type, onChange }) => {
             hasVoted: true,
             type: val ? 'up' : 'down'
           });
+
+          setSnackPack((prev) => [...prev, createMessage('Vote registered!', 'info')]);
         }
       })
-      .catch(err => console.log(err));
+      .catch(err => setSnackPack((prev) => [...prev, createMessage('Could not vote.', 'error')]));
   }
 
-  const isVotingDisabled = (type) => {
-    if (!authState.isAuthenticated) {
-      return false;
-    }
-
-    return vote.hasVoted && vote.type === type;
+const isVotingDisabled = (type) => {
+  if (!authState.isAuthenticated) {
+    return false;
   }
 
-  const theme = useTheme();
+  return vote.hasVoted && vote.type === type;
+}
 
-  const getButtonColor = (type) => {
-    if (!vote.hasVoted) {
-      return 'inherit';
-    }
+const theme = useTheme();
 
-    if (vote.type == type) {
-      if (vote.type === 'down') {
-        return theme.palette.error.main;
-      } else {
-        return theme.palette.success.main;
-      }
-    }
-
+const getButtonColor = (type) => {
+  if (!vote.hasVoted) {
     return 'inherit';
   }
 
-  return (
-    <Stack
-      spacing={0.5}
-      alignItems="center"
-    >
-      <IconButton aria-label="delete" size="large"
-        disabled={isVotingDisabled('up')} onClick={() => doVote(true)}
-        sx={{ color: `${getButtonColor('up')}!important` }}>
-        <KeyboardArrowUp fontSize="inherit" />
-      </IconButton>
-      <Typography variant="h5" gutterBottom component="div">
-        {voteCount}
-      </Typography>
-      <IconButton aria-label="delete" size="large"
-        disabled={isVotingDisabled('down')} onClick={() => doVote(false)}
-        sx={{ color: `${getButtonColor('down')}!important` }}>
-        <KeyboardArrowDown fontSize="inherit" />
-      </IconButton>
-    </Stack>
-  )
+  if (vote.type == type) {
+    if (vote.type === 'down') {
+      return theme.palette.error.main;
+    } else {
+      return theme.palette.success.main;
+    }
+  }
+
+  return 'inherit';
+}
+
+return (
+  <Stack
+    spacing={0.5}
+    alignItems="center"
+  >
+    <IconButton aria-label="delete" size="large"
+      disabled={isVotingDisabled('up')} onClick={() => doVote(true)}
+      sx={{ color: `${getButtonColor('up')}!important` }}>
+      <KeyboardArrowUp fontSize="inherit" />
+    </IconButton>
+    <Typography variant="h5" gutterBottom component="div">
+      {voteCount}
+    </Typography>
+    <IconButton aria-label="delete" size="large"
+      disabled={isVotingDisabled('down')} onClick={() => doVote(false)}
+      sx={{ color: `${getButtonColor('down')}!important` }}>
+      <KeyboardArrowDown fontSize="inherit" />
+    </IconButton>
+  </Stack>
+)
 }
 
 export default VoteContent;

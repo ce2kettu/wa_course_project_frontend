@@ -2,6 +2,7 @@ import { Avatar, Typography, Stack } from '@mui/material';
 import { stringAvatar } from '../util';
 import { Link as RouterLink } from 'react-router-dom';
 
+// Display user with avatar and name
 const UserHeader = ({ user, color }) => {
   const displayName = user.displayName || 'Unknown';
 
@@ -15,7 +16,7 @@ const UserHeader = ({ user, color }) => {
         cursor: 'pointer',
         mb: 2
       }}>
-      <Avatar {...stringAvatar(displayName || 'Unknown')} />
+      <Avatar {...stringAvatar(displayName)} />
       <Typography sx={{ ml: 2, mb: 0 }} variant="subtitle2" gutterBottom component="div" color={color}>
         {displayName}
       </Typography>

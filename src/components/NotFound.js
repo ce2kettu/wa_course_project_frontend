@@ -1,5 +1,6 @@
 import { Typography, Box, Container } from '@mui/material';
 
+// Diplayed when a page is not found
 const NotFound = () => {
   return (
     <Container component="main" maxWidth="xs">

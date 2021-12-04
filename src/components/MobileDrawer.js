@@ -3,6 +3,7 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../reducers/auth';
 import { Button, Typography, Drawer, Box } from '@mui/material';
 
+// Side navigation panel for small devices
 const MobileDrawer = (props) => {
   const { state: authState, dispatch } = useContext(AuthContext);
   let navigate = useNavigate();
