@@ -39,12 +39,12 @@ const HomePage = () => {
     }
   }, []);
 
-  const openPost = (post) => {
+  const openQuestion = (post) => {
     navigate(`/q/${post._id}`);
   }
 
-  const createPost = () => {
-    navigate('/createPost');
+  const askQuestion = () => {
+    navigate('/askQuestion');
   }
 
   return <>
@@ -54,7 +54,7 @@ const HomePage = () => {
       </Typography>
       {
         authState.isAuthenticated &&
-        <Fab variant="extended" color="secondary" sx={{ ml: { xs: 0, sm: 5 }, mb: { xs: 3, sm: 0 } }} onClick={createPost}>
+        <Fab variant="extended" color="secondary" sx={{ ml: { xs: 0, sm: 5 }, mb: { xs: 3, sm: 0 } }} onClick={askQuestion}>
           <AddIcon sx={{ mr: 1 }} />
           ask question
         </Fab>
@@ -81,13 +81,13 @@ const HomePage = () => {
     {/* Display posts */}
     {
       data.posts.length > 0 &&
-      <Paper elevation={3}>
+      <Paper elevation={3} sx={{ mb: 8 }}>
         <List>
           {
             data.posts.length > 0 &&
             data.posts.map((post, index) =>
               <div key={index}>
-                <Grid container spacing={2} sx={{ py: 1, px: 2, cursor: 'pointer' }} onClick={() => openPost(post)}>
+                <Grid container spacing={2} sx={{ py: 1, px: 2, cursor: 'pointer' }} onClick={() => openQuestion(post)}>
                   <Grid item xs alignItems="center">
                     <Stack>
                       <Stack direction="row">
