@@ -1,5 +1,5 @@
-import { useReducer, useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useReducer, useEffect, useState } from 'react';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { createTheme, ThemeProvider, CssBaseline, Container } from '@mui/material';
 import { AuthContext, reducer, initialState } from './reducers/auth';
 import Config from "./config";
@@ -11,11 +11,15 @@ import NotFound from './components/NotFound';
 import PostDetail from './components/PostDetail';
 import CreatePost from './components/CreatePost';
 import UserProfile from './components/UserProfile';
+import EditProfile from './components/EditProfile';
 import RequireAuth from './components/RequireAuth';
+import RedirectAuth from './components/RedirectAuth';
 
 const App = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const [invalidLogin, setInvalidLogin] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isInvalidLogin, setIsInvalidLogin] = useState(false);
+  let navigate = useNavigate();
 
   // Check if user is already logged in
   useEffect(() => {
@@ -48,18 +52,56 @@ const App = () => {
               });
 
               // Navigate to login page
-              setInvalidLogin(true);
-              setInvalidLogin(false);
+              navigate('/login', { replace: true });
             }
+
+            setIsLoading(false);
           }
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+          setIsLoading(false);
+        });
+    } else {
+      setIsLoading(false);
     }
 
     return () => {
       isMounted = false;
     }
   }, []);
+
+  const addRoutes = () => {
+    if (!isLoading) {
+      return (
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="post/:postId" element={<PostDetail />} />
+          <Route path="register" element={
+            <RedirectAuth>
+              <RegisterForm />
+            </RedirectAuth>
+          } />
+          <Route path="login" element={
+            <RedirectAuth>
+              <LoginForm />
+            </RedirectAuth>
+          } />
+          <Route path="profile/:userId" element={<UserProfile />} />
+          <Route path="editProfile" element={
+            <RequireAuth>
+              <EditProfile />
+            </RequireAuth>
+          } />
+          <Route path="createPost" element={
+            <RequireAuth>
+              <CreatePost />
+            </RequireAuth>
+          } />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      );
+    }
+  }
 
   const theme = createTheme({
     palette: {
@@ -70,33 +112,15 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <BrowserRouter>
-        <AuthContext.Provider value={{
-          state,
-          dispatch
-        }}>
-          {
-            invalidLogin &&
-            <Navigate to="/login" state={{ replace: true }} />
-          }
-          <Header />
-          <Container component="main">
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="post/:postId" element={<PostDetail />} />
-              <Route path="register" element={<RegisterForm />} />
-              <Route path="login" element={<LoginForm />} />
-              <Route path="profile/:userId" element={<UserProfile />} />
-              <Route path="createPost" element={
-                <RequireAuth>
-                  <CreatePost />
-                </RequireAuth>
-              } />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Container>
-        </AuthContext.Provider>
-      </BrowserRouter>
+      <AuthContext.Provider value={{
+        state,
+        dispatch
+      }}>
+        <Header />
+        <Container component="main">
+          {addRoutes()}
+        </Container>
+      </AuthContext.Provider>
     </ThemeProvider>
   );
 }
