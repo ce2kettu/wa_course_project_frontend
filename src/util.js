@@ -26,3 +26,9 @@ export function stringAvatar(name) {
     children: name[0].toUpperCase(),
   };
 }
+
+export function createMessage(message, type) {
+  type = type || 'normal';
+
+  return { message, type, key: new Date().getTime() }
+}
