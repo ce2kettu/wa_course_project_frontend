@@ -64,8 +64,6 @@ const VoteContent = ({ contentId, voteCount, type, onChange }) => {
             hasVoted: true,
             type: val ? 'up' : 'down'
           });
-
-          setSnackPack((prev) => [...prev, createMessage('Vote registered!', 'info')]);
         }
       })
       .catch(err => setSnackPack((prev) => [...prev, createMessage('Could not vote.', 'error')]));
