@@ -21,9 +21,9 @@ function stringToColor(string) {
 export function stringAvatar(name) {
   return {
     sx: {
-      bgcolor: stringToColor(name),
+      bgcolor: name ? stringToColor(name) : '#000',
     },
-    children: name[0].toUpperCase(),
+    children: name ? name[0].toUpperCase() : 'U',
   };
 }
 
