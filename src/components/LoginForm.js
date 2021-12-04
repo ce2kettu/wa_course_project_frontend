@@ -3,39 +3,29 @@ import { LockOutlined as LockOutlinedIcon } from '@mui/icons-material';
 import { Alert, Container, Typography, Grid, Box, Link, TextField, Button, Avatar } from '@mui/material';
 import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../reducers/auth';
-import config from '../config';
+import { SnackbarContext } from '../SnackbarContext';
+import Config from '../config';
+import { createMessage } from '../util';
 
 const LoginForm = () => {
   const { state: authState, dispatch } = useContext(AuthContext);
+  const { snackPack, setSnackPack } = useContext(SnackbarContext);
   let navigate = useNavigate();
   let location = useLocation();
-  const from = location.state?.from?.pathname || '/';
+  const [data, setData] = useState(initialState);
 
+  const from = location.state?.from?.pathname || '/';
   const initialState = {
     errorMessage: null,
     errors: null,
   }
 
-  useEffect(() => {
-    let timer;
-    if (authState.registrationSuccessful) {
-      timer = setTimeout(() => {
-        dispatch({ type: 'DISMISS_REGISTRATION' })
-      }, 3000);
-    }
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [])
-
-  const [data, setData] = useState(initialState);
-
+  // Handle login on server
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
-    fetch(`${config.apiUrl}/api/users/login`, {
+    fetch(`${Config.apiUrl}/api/users/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -53,6 +43,7 @@ const LoginForm = () => {
             payload: data
           });
           navigate(from, { replace: true });
+          setSnackPack((prev) => [...prev, createMessage('Welcome back!', 'success')]);
         } else {
           data.errors ?
             setData({ ...data, errors: data.errors }) :
@@ -72,10 +63,6 @@ const LoginForm = () => {
           alignItems: 'center',
         }}
       >
-        {authState.registrationSuccessful && (
-          <Alert severity="success" sx={{ mb: 2 }}>Registration successful</Alert>
-        )}
-
         <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
           <LockOutlinedIcon />
         </Avatar>

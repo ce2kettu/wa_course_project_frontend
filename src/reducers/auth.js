@@ -1,12 +1,11 @@
-import * as React from 'react';
+import { createContext } from 'react';
 
-export const AuthContext = React.createContext();
+export const AuthContext = createContext();
 
 export const initialState = {
     isAuthenticated: false,
     user: null,
     token: null,
-    registrationSuccessful: false,
 };
 
 export const reducer = (state, action) => {
@@ -28,20 +27,6 @@ export const reducer = (state, action) => {
                 isAuthenticated: false,
                 user: null
             };
-        case 'REGISTER':
-            {
-                return {
-                    ...state,
-                    registrationSuccessful: true
-                }
-            }
-        case 'DISMISS_REGISTRATION':
-            {
-                return {
-                    ...state,
-                    registrationSuccessful: false
-                }
-            }
         default:
             return state;
     }

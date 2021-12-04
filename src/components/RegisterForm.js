@@ -3,10 +3,13 @@ import { LockOutlined as LockOutlinedIcon } from '@mui/icons-material';
 import { Alert, Container, Typography, Box, Grid, Link, TextField, Button, Avatar } from '@mui/material';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../reducers/auth';
-import config from '../config';
+import { SnackbarContext } from '../SnackbarContext';
+import Config from '../config';
+import { createMessage } from '../util';
 
 const RegisterForm = () => {
   const { state: authState, dispatch } = useContext(AuthContext);
+  const { snackPack, setSnackPack } = useContext(SnackbarContext);
   let navigate = useNavigate();
 
   const initialState = {
@@ -16,11 +19,12 @@ const RegisterForm = () => {
 
   const [data, setData] = useState(initialState);
 
+  // Handle registration on server
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
-    fetch(`${config.apiUrl}/api/users/register`, {
+    fetch(`${Config.apiUrl}/api/users/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -34,9 +38,7 @@ const RegisterForm = () => {
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          dispatch({
-            type: 'REGISTER',
-          });
+          setSnackPack((prev) => [...prev, createMessage('Registration successful!', 'success')]);
           navigate('/login', { replace: true });
         } else {
           data.errors ?
