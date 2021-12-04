@@ -14,12 +14,6 @@ const RegisterForm = () => {
     errors: null,
   }
 
-  useEffect(() => {
-    if (authState.isAuthenticated) {
-      navigate('/', { replace: true });
-    }
-  }, [])
-
   const [data, setData] = useState(initialState);
 
   const handleSubmit = (event) => {

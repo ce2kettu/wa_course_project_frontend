@@ -11,18 +11,12 @@ const LoginForm = () => {
   let location = useLocation();
   const from = location.state?.from?.pathname || '/';
 
-
   const initialState = {
     errorMessage: null,
     errors: null,
   }
 
   useEffect(() => {
-    if (authState.isAuthenticated) {
-      navigate('/', { replace: true });
-      return;
-    }
-
     let timer;
     if (authState.registrationSuccessful) {
       timer = setTimeout(() => {
