@@ -1,30 +1,26 @@
-import { Avatar, Typography, Box } from '@mui/material';
+import { Avatar, Typography, Stack } from '@mui/material';
 import { stringAvatar } from '../util';
-import { useNavigate } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 
 const UserHeader = ({ user }) => {
-    let navigate = useNavigate();
+  const displayName = user.displayName || 'Unknown';
 
-    const openProfile = () => {
-        navigate(`/profile/${user._id}`);
-    }
-
-    return (
-        <Box
-            onClick={openProfile}
-            sx={{
-                cursor: 'pointer',
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                mb: 2
-            }}>
-            <Avatar {...stringAvatar(user.displayName || 'Unknown')} />
-            <Typography sx={{ ml: 2, mb: 0 }} variant="subtitle2" gutterBottom component="div">
-                {user.displayName || 'Unknown'}
-            </Typography>
-        </Box>
-    )
+  return (
+    <Stack
+      direction="row"
+      alignItems="center"
+      component={RouterLink}
+      to={`/profile/${user._id}`}
+      sx={{
+        cursor: 'pointer',
+        mb: 2
+      }}>
+      <Avatar {...stringAvatar(displayName || 'Unknown')} />
+      <Typography sx={{ ml: 2, mb: 0 }} variant="subtitle2" gutterBottom component="div">
+        {displayName}
+      </Typography>
+    </Stack>
+  )
 }
 
 export default UserHeader;
