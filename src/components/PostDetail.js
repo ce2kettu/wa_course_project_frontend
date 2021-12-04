@@ -1,47 +1,34 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import Alert from '@mui/material/Alert';
 import Avatar from '@mui/material/Avatar';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import Config from '../config';
 import ReactTimeAgo from 'react-time-ago'
 import { useTheme } from '@mui/system';
+import { AuthContext } from '../reducers/auth';
+import Button from '@mui/material/Button';
+import MDEditor from '@uiw/react-md-editor';
+import { useNavigate } from 'react-router-dom';
+import { stringAvatar } from '../util';
+import UserHeader from './UserHeader';
+import VoteContent from './VoteContent';
+import { Grid, Stack } from '@mui/material';
 
 const PostDetail = () => {
-  let [post, setPost] = useState(null);
-  let [error, setError] = useState('');
+  const { state: authState } = useContext(AuthContext);
+  const [post, setPost] = useState(null);
+  const [commentValue, setCommentValue] = useState('');
+  const [editableValue, setEditableValue] = useState('');
+  const [modifyContentId, setModifyContentId] = useState('');
+  const [error, setError] = useState('');
+  const [requestRefresh, setRequestRefresh] = useState(0);
   let params = useParams();
+  let navigate = useNavigate();
 
-  function stringToColor(string) {
-    let hash = 0;
-    let i;
-
-    /* eslint-disable no-bitwise */
-    for (i = 0; i < string.length; i += 1) {
-      hash = string.charCodeAt(i) + ((hash << 5) - hash);
-    }
-
-    let color = '#';
-
-    for (i = 0; i < 3; i += 1) {
-      const value = (hash >> (i * 8)) & 0xff;
-      color += `00${value.toString(16)}`.substr(-2);
-    }
-    /* eslint-enable no-bitwise */
-
-    return color;
-  }
-
-  function stringAvatar(name) {
-    return {
-      sx: {
-        bgcolor: stringToColor(name),
-      },
-      children: `${name.split(' ')[0][0]}`,
-    };
-  }
-
+  // Fetch post details
   useEffect(() => {
     let isMounted = true;
 
@@ -50,7 +37,7 @@ const PostDetail = () => {
       .then(data => {
         if (data.success) {
           if (isMounted) {
-            console.log(data.post);
+            document.title = `${data.post.title} - Heapoverflow`;
             setPost(data.post);
           }
         } else {
@@ -62,7 +49,115 @@ const PostDetail = () => {
     return () => {
       isMounted = false;
     }
-  }, []);
+  }, [requestRefresh]);
+
+  const postComment = () => {
+    fetch(`${Config.apiUrl}/api/comments/${post._id}/newComment`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authState.token}`
+      },
+      body: JSON.stringify({
+        body: commentValue
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          refreshPost();
+        }
+      })
+      .catch(err => console.log(err));
+  };
+
+  const editComment = (comment) => {
+    setModifyContentId('');
+
+    fetch(`${Config.apiUrl}/api/comments/${comment._id}/edit`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authState.token}`
+      },
+      body: JSON.stringify({
+        body: editableValue
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          refreshPost();
+        }
+      })
+      .catch(err => console.log(err));
+  };
+
+  const deleteComment = (comment) => {
+    fetch(`${Config.apiUrl}/api/comments/${comment._id}/delete`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authState.token}`
+      }
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          refreshPost();
+        }
+      })
+      .catch(err => console.log(err));
+  }
+
+  const deletePost = () => {
+    fetch(`${Config.apiUrl}/api/posts/${params.postId}/delete`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authState.token}`
+      }
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          navigate('/', { replace: true })
+        }
+      })
+      .catch(err => console.log(err));
+  }
+
+  const editPost = () => {
+    setModifyContentId('');
+
+    fetch(`${Config.apiUrl}/api/posts/${params.postId}/edit`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authState.token}`
+      },
+      body: JSON.stringify({
+        title: post.title,
+        body: editableValue
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          refreshPost();
+        }
+      })
+      .catch(err => console.log(err));
+  }
+
+  const editCommentInline = (comment) => {
+    setEditableValue(comment.body);
+    setModifyContentId(comment._id);
+  }
+
+  const refreshPost = () => {
+    setRequestRefresh(requestRefresh + 1);
+  }
 
   const theme = useTheme();
 
@@ -81,33 +176,141 @@ const PostDetail = () => {
               flexDirection: 'column',
             }}
           >
-
-            <h1>{post.title}</h1>
+            <Typography variant="h4" gutterBottom component="div">{post.title}</Typography>
             <Box>
-              <span style={{ marginRight: '1em' }}>Posted<ReactTimeAgo style={{ marginLeft: '.5em', color: theme.palette.secondary.main }} date={post.createdAt} locale="en-US" /></span>
+              <span style={{ marginRight: '1em' }}>posted<ReactTimeAgo style={{ marginLeft: '.5em', color: theme.palette.secondary.main }} date={new Date(post.createdAt)} locale="en-US" /></span>
               {
-                post.editedAt && 
-                post.createdAt !== post.editedAt &&
+                post.updatedAt &&
+                post.createdAt !== post.updatedAt &&
                 (
-                  <span style={{ marginRight: '1em' }}>Edited<ReactTimeAgo style={{ marginLeft: '.5em', color: theme.palette.secondary.main }} date={post.editedAt} locale="en-US" /></span>)
+                  <span style={{ marginRight: '1em' }}>edited<ReactTimeAgo style={{ marginLeft: '.5em', color: theme.palette.secondary.main }} date={new Date(post.updatedAt)} locale="en-US" /></span>)
+              }
+              {
+                (authState.user?._id === post.user._id || authState.user?.isAdmin)
+                && post._id !== modifyContentId &&
+                <Button onClick={() => editCommentInline(post)}>Edit</Button>
+              }
+              {
+                authState.user?.isAdmin &&
+                <Button onClick={() => deletePost(post)}>Delete</Button>
+              }
+              {
+                post._id === modifyContentId &&
+                <Button onClick={() => editPost(post)}>Save changes</Button>
               }
             </Box>
 
             <Paper variant="outlined" sx={{ width: '100%', padding: 3, mt: 2 }}>
-              <Avatar {...stringAvatar(post.user.displayName || 'Unknown')} />
-              <h6>{post.user && post.user.displayName}</h6>
+              <UserHeader user={post.user} />
 
-              <h2>{post.body}</h2>
-
-              {
-                post.comments &&
-                post.comments.map((comment, index) => {
-                  return <h5>{comment.body}</h5>
-                })
-              }
+              <Grid
+                container
+                spacing={2}
+                justifyContent="space-between"
+              >
+                <Grid item xs={10}>
+                  {
+                    post._id === modifyContentId ?
+                      <MDEditor
+                        value={editableValue}
+                        onChange={setEditableValue}
+                      />
+                      :
+                      <MDEditor.Markdown source={post.body} />
+                  }
+                </Grid>
+                <Grid item xs="auto">
+                  <VoteContent type="post" voteCount={post.score} contentId={post._id} onChange={refreshPost} />
+                </Grid>
+              </Grid>
             </Paper>
-          </Box>
 
+            <Typography sx={{ mt: 4 }} variant="h6" gutterBottom component="div">
+              Answers
+            </Typography>
+
+            {
+              post.comments &&
+              post.comments.map((comment, index) => {
+                return <Paper variant="outlined" sx={{ width: '100%', padding: 3, mt: 2 }} key={index}>
+                  <UserHeader user={comment.user} />
+
+                  <Grid
+                    container
+                    spacing={2}
+                    justifyContent="space-between"
+                  >
+                    <Grid item xs={10}>
+                      {
+                        comment._id === modifyContentId ?
+                          <MDEditor
+                            value={editableValue}
+                            onChange={setEditableValue}
+                          />
+                          :
+                          <MDEditor.Markdown source={comment.body} />
+                      }
+                    </Grid>
+                    <Grid item xs="auto">
+                      <VoteContent type="comment" voteCount={comment.score} contentId={comment._id} onChange={refreshPost} />
+                    </Grid>
+                  </Grid>
+
+
+                  <Box sx={{ mt: 3 }}>
+                    <span style={{ marginRight: '1em' }}>posted<ReactTimeAgo style={{ marginLeft: '.5em', color: theme.palette.secondary.main }} date={new Date(comment.createdAt)} locale="en-US" /></span>
+                    {
+                      comment.updatedAt &&
+                      comment.createdAt !== comment.updatedAt &&
+                      (
+                        <span style={{ marginRight: '1em' }}>edited<ReactTimeAgo style={{ marginLeft: '.5em', color: theme.palette.secondary.main }} date={new Date(comment.updatedAt)} locale="en-US" /></span>)
+                    }
+                    {
+                      (authState.user?._id === comment.user._id || authState.user?.isAdmin)
+                      && comment._id !== modifyContentId &&
+                      <Button onClick={() => editCommentInline(comment)}>Edit</Button>
+                    }
+                    {
+                      authState.user?.isAdmin &&
+                      <Button onClick={() => deleteComment(comment)}>Delete</Button>
+                    }
+                    {
+                      comment._id === modifyContentId &&
+                      <Button onClick={() => editComment(comment)}>Save changes</Button>
+                    }
+                  </Box>
+                </Paper>
+              })
+            }
+
+            {
+              post.comments && post.comments.length === 0 &&
+              <Alert severity="info" sx={{ mt: 1 }}>No answers yet! Be the first one to answer.</Alert>
+            }
+
+            {
+              authState.isAuthenticated
+                ? (
+                  <Box sx={{ mt: 3 }}>
+                    <Typography sx={{ mt: 4 }} variant="h6" gutterBottom component="div">
+                      Your answer
+                    </Typography>
+                    <MDEditor
+                      textareaProps={{
+                        placeholder: 'Post content ....'
+                      }}
+                      value={commentValue}
+                      onChange={setCommentValue}
+                    />
+                    <Box sx={{ mt: 3 }}>
+                      <Button variant="outlined" onClick={postComment}>Post reply</Button>
+                    </Box>
+                  </Box>
+                )
+                :
+                <Alert severity="warning" sx={{ mt: 1 }}>You need to be logged in to answer.</Alert>
+            }
+          </Box>
         )
       }
     </>
