@@ -1,21 +1,14 @@
 import { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
-import Alert from '@mui/material/Alert';
-import Avatar from '@mui/material/Avatar';
-import Paper from '@mui/material/Paper';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import Config from '../config';
 import ReactTimeAgo from 'react-time-ago'
 import { useTheme } from '@mui/system';
 import { AuthContext } from '../reducers/auth';
-import Button from '@mui/material/Button';
 import MDEditor from '@uiw/react-md-editor';
 import { useNavigate } from 'react-router-dom';
-import { stringAvatar } from '../util';
 import UserHeader from './UserHeader';
 import VoteContent from './VoteContent';
-import { Grid, Stack } from '@mui/material';
+import { Grid, Button, Typography, Box, Paper, Alert } from '@mui/material';
 
 const PostDetail = () => {
   const { state: authState } = useContext(AuthContext);

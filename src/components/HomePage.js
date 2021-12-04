@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext, Fragment } from 'react';
 import { Alert, List, ListItem, ListItemText, Box, Fab, Paper, Divider, Typography } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
+import { Add as AddIcon } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../reducers/auth';
 import Config from '../config';

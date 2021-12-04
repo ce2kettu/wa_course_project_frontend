@@ -1,17 +1,7 @@
 import { useContext, useState } from 'react';
-import Drawer from '@mui/material/Drawer';
-import ListItemText from '@mui/material/ListItemText';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../reducers/auth';
-import Button from '@mui/material/Button';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import Avatar from '@mui/material/Avatar';
+import { Avatar, Menu, MenuItem, Button, Typography, ListItem, ListItemButton, List, ListItemText, Drawer, Box } from '@mui/material';
 
 const MobileDrawer = (props) => {
   const { state: authState, dispatch } = useContext(AuthContext);

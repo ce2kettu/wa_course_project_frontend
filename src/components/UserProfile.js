@@ -1,5 +1,4 @@
-import { Alert, Avatar, Container, Typography } from '@mui/material';
-import { Box } from '@mui/system';
+import { Alert, Avatar, Container, Typography, Box } from '@mui/material';
 import { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import Config from '../config';

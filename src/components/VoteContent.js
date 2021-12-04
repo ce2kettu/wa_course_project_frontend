@@ -1,9 +1,8 @@
 import { useEffect, useState, useContext } from 'react';
 import { KeyboardArrowUp, KeyboardArrowDown } from "@mui/icons-material";
-import { IconButton, Stack, Typography } from "@mui/material";
+import { IconButton, Stack, Typography, useTheme } from "@mui/material";
 import { AuthContext } from '../reducers/auth';
 import Config from '../config';
-import { useTheme } from '@mui/system';
 
 const VoteContent = ({ contentId, voteCount, type, onChange }) => {
   const { state: authState } = useContext(AuthContext);

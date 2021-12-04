@@ -1,17 +1,7 @@
-import { useContext } from 'react';
-import Avatar from '@mui/material/Avatar';
-import AppBar from '@mui/material/AppBar';
-import Button from '@mui/material/Button';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Link from '@mui/material/Link';
-import { useMediaQuery, useTheme } from '@mui/material';
+import { useContext, useState } from 'react';
 import MobileDrawer from './MobileDrawer';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import { React, useState } from 'react';
+import { MenuItem, Menu, IconButton, Typography, Link, Toolbar, Button, AppBar, Avatar, useMediaQuery, useTheme } from '@mui/material';
+import { Menu as MenuIcon } from '@mui/icons-material';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../reducers/auth';
 

@@ -1,6 +1,5 @@
-import { Avatar, Typography } from "@mui/material";
-import { Box } from "@mui/system";
-import { stringAvatar } from "../util";
+import { Avatar, Typography, Box } from '@mui/material';
+import { stringAvatar } from '../util';
 import { useNavigate } from 'react-router-dom';
 
 const UserHeader = ({ user }) => {

@@ -2,8 +2,7 @@ import { useContext, useState } from 'react';
 import { AuthContext } from '../reducers/auth';
 import MDEditor from '@uiw/react-md-editor';
 import Config from '../config';
-import { Button, TextField, Typography } from '@mui/material';
-import { Box } from '@mui/system';
+import { Button, TextField, Typography, Box } from '@mui/material';
 
 const CreatePost = () => {
     const { state: authState } = useContext(AuthContext);
