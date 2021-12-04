@@ -18,7 +18,7 @@ const UserProfile = () => {
       .then(data => {
         if (data.success) {
           if (isMounted) {
-            document.title = `${data.profile.displayName} - Heapoverflow`;
+            document.title = `${data.profile.displayName || 'Unknown'} - Heapoverflow`;
             setUser(data.profile);
           }
         } else {
