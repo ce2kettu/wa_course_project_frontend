@@ -71,7 +71,7 @@ const VoteContent = ({ contentId, voteCount, type, onChange }) => {
 
 const isVotingDisabled = (type) => {
   if (!authState.isAuthenticated) {
-    return false;
+    return true;
   }
 
   return vote.hasVoted && vote.type === type;
