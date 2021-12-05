@@ -75,6 +75,7 @@ const QuestionDetail = () => {
   };
 
   const editAnswer = (comment) => {
+    // Reset editable content
     setModifyContentId('');
 
     fetch(`${Config.apiUrl}/api/comments/${comment._id}/edit`, {
@@ -100,6 +101,9 @@ const QuestionDetail = () => {
   };
 
   const deleteAnswer = (comment) => {
+    // Reset editable content
+    setModifyContentId('');
+
     fetch(`${Config.apiUrl}/api/comments/${comment._id}/delete`, {
       method: 'DELETE',
       headers: {
@@ -162,6 +166,10 @@ const QuestionDetail = () => {
         }
       })
       .catch(err => setSnackPack((prev) => [...prev, createMessage('Please try again.', 'error')]));
+  }
+
+  const cancelEditing = () => {
+    setModifyContentId('');
   }
 
   const editContentInline = (content) => {
@@ -230,6 +238,10 @@ const QuestionDetail = () => {
               {
                 post._id === modifyContentId &&
                 <Button onClick={() => editQuestion(post)}>Save changes</Button>
+              }
+              {
+                post._id === modifyContentId &&
+                <Button onClick={cancelEditing}>Discard</Button>
               }
             </Box>
 
@@ -310,6 +322,10 @@ const QuestionDetail = () => {
                     {
                       comment._id === modifyContentId &&
                       <Button onClick={() => editAnswer(comment)}>Save changes</Button>
+                    }
+                    {
+                      comment._id === modifyContentId &&
+                      <Button onClick={cancelEditing}>Discard</Button>
                     }
                   </Box>
                 </Paper>
